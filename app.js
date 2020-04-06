@@ -3,15 +3,15 @@ var mongoose = require("mongoose");
 var app = express();
 var bodyParser = require("body-parser");
 var camp = require("./models/campground");
-var seedDB = require("./seeds");
 var Comment   = require("./models/comment");
 
-
+var seedDB = require("./seeds");
 //seedDB();
 
 mongoose.connect("mongodb://localhost/camps", { useNewUrlParser: true,useUnifiedTopology: true});
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static("public"));
 
 
 app.get("/",(req,res) => {
@@ -68,7 +68,15 @@ app.get("/campgrounds/:id",(req,res) => {
 });
 
 app.get("/campgrounds/:id/comments/new",(req,res) => {
-	res.render("newComment",{id: req.params.id});
+	camp.findById(req.params.id,(err,foundCamp) => {
+		if(err){
+			console.log(err);
+		}
+		else {
+			res.render("newComment",{camp: foundCamp});
+		}
+	})
+	
 });
 
 app.post("/campgrounds/:id/comments",(req,res) => {
@@ -76,10 +84,7 @@ app.post("/campgrounds/:id/comments",(req,res) => {
 		if(err){
 			console.log(err);
 		}else {
-			Comment.create({
-				text: req.body.comment,
-				author: "Peter"
-			},(err,newComment) => {
+			Comment.create(req.body.comment,(err,newComment) => {
 				if(err){
 					console.log(err);
 				}else {
