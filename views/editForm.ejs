@@ -1,0 +1,32 @@
+<%- include("partials/header") %>
+<div class = "container">
+	
+
+		<h1 class = "text-center">
+			Edit <%= campground.name%>
+		</h1>
+	
+	<div><!--За стилизиране -->  
+		
+		<form  action = "/campgrounds/<%=campground._id%>?_method=PUT" method = "POST">
+			<div class= "form-group">
+				<input type="text"  class="form-control" value="<%=campground.name%>" name = "update[name]">
+			</div>
+			<div class= "form-group">
+				<input type="text"  class="form-control" value="<%=campground.photo%>" name = "update[photo]">
+			</div>
+			<div class= "form-group">
+			<div class= "form-group">
+				<input type="text" value="<%=campground.descriptions%>" name = "update[descriptions]" class="form-control">
+			</div>
+				<button class = "btn btn-primary btn-lg">
+				Submit
+			</button>
+			</div>
+			
+		</form>
+		<a href ="/campgrounds">Back</a>
+	</div>
+</div>
+
+<%- include("partials/footer") %>

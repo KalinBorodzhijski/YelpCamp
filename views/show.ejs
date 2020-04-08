@@ -15,9 +15,18 @@
             <div class="thumbnail">
                 <img src="<%= element.photo %>" class="img-responsive" alt="">
                 <div class="caption-full">
+                    
                     <h4 class="pull-right">$9.00/night</h4>
                     <h4><a href=""><%= element.name %></a></h4>
                     <p><%= element.descriptions %></p>
+                    <p>
+                        <em>Submitted by: <%= element.author.username%></em>
+                    </p>
+                    <a href="/campgrounds/<%= element._id%>/edit" class="btn btn-warning">Edit</a>
+                    <form id="deleteButton" action="/campgrounds/<%= element._id%>?_method=DELETE" method="post">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                    
                 </div>
             </div>
             <div class="well">

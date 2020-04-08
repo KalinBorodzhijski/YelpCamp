@@ -9,6 +9,9 @@ var passportLocal = require("passport-local");
 var expressSession = require("express-session");
 var User = require("./models/user");
 var seedDB = require("./seeds");
+var methodOverride = require("method-override");
+
+app.use(methodOverride("_method"));
 
 
 var commentRoutes = require("./routes/comments"),
