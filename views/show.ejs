@@ -22,11 +22,12 @@
                     <p>
                         <em>Submitted by: <%= element.author.username%></em>
                     </p>
-                    <a href="/campgrounds/<%= element._id%>/edit" class="btn btn-warning">Edit</a>
-                    <form id="deleteButton" action="/campgrounds/<%= element._id%>?_method=DELETE" method="post">
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
-                    
+                    <% if(currentUser && campgrounds.author.id.equals(currentUser._id)){%>
+                        <a href="/campgrounds/<%= element._id%>/edit" class="btn btn-warning">Edit</a>
+                        <form id="deleteButton" action="/campgrounds/<%= element._id%>?_method=DELETE" method="post">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    <% }%>
                 </div>
             </div>
             <div class="well">

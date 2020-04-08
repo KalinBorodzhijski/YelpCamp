@@ -12,8 +12,6 @@ routes.get("/campgrounds",(req,res) => {
 			res.render("campgrounds",{campgrounds: element});
 		}
 	})
-	
-	
 })
 
 routes.get("/campgrounds/new",isLoggedIn,(req,res) => {
@@ -30,16 +28,15 @@ routes.post("/campgrounds",isLoggedIn,(req,res) => {
 			id: req.user._id,
 			username: req.user.username
 		}
-
 	},(err,element) => {
 		if(err){
 			console.log("Error adding to the database");
 			console.log(err);
 		}
 		
-		
+		res.redirect("/campgrounds");
 	});
-	res.redirect("/campgrounds");
+	
 })
 routes.get("/campgrounds/:id",(req,res) => {
 
@@ -56,38 +53,28 @@ routes.get("/campgrounds/:id",(req,res) => {
 
 });
 
-routes.get("/campgrounds/:id/edit",(req,res)=>{
-	camp.findById(req.params.id,(err,element) => {
-		if(err){
-			res.redirect("/campgrounds");
-		}
-		res.render("editForm",{campground: element});
-	})
+routes.get("/campgrounds/:id/edit",checkAccountOwnership,(req,res)=>{
 
-});
-
-routes.put("/campgrounds/:id",(req,res)=> {
-	camp.findByIdAndUpdate(req.params.id,req.body.update,(err,element)=> {
-		if(err){
-			res.redirect("/campgrounds");
-		}else {
-			res.redirect("/campgrounds/" + req.params.id);
-		}
-	})
-
-});
-
-routes.delete("/campgrounds/:id",(req,res)=> {
-	camp.findByIdAndDelete(req.params.id,(err,element)=>{
-		if(err){
-			res.redirect("/campgrounds");
-		}
-		Comment.deleteMany({_id: { $in: element.comments } },(err)=> {
-			if(err){
-				console.log("Error");
-			}
+		camp.findById(req.params.id,(err,element) => {
+			
+			res.render("editForm",{campground: element});
+			
 		})
+	
+});
+
+routes.put("/campgrounds/:id",checkAccountOwnership,(req,res)=> {
+	camp.findByIdAndUpdate(req.params.id,req.body.update,(err,element)=> {
+	
+			res.redirect("/campgrounds/" + req.params.id);
 		
+	})
+
+});
+
+routes.delete("/campgrounds/:id",checkAccountOwnership,(req,res)=> {
+	camp.findByIdAndDelete(req.params.id,(err,element)=>{
+		Comment.deleteMany({_id: { $in: element.comments } });
 		res.redirect("/campgrounds");
 	})
 
@@ -101,6 +88,25 @@ function isLoggedIn(req,res,next){
 	}
 	res.redirect("/login");
 
+}
+
+function checkAccountOwnership(req,res,next){
+	if(req.isAuthenticated()){
+		camp.findById(req.params.id,(err,element) => {
+			if(err){
+				res.redirect("back");
+			}
+			if(element.author.id.equals(req.user._id)){
+				next();
+			}
+			else{
+				res.redirect("back"); 
+			}
+		})
+	}
+	else {
+		res.redirect("back");
+	}
 }
 
 module.exports = routes;
