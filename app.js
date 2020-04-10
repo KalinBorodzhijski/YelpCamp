@@ -10,8 +10,12 @@ var expressSession = require("express-session");
 var User = require("./models/user");
 var seedDB = require("./seeds");
 var methodOverride = require("method-override");
+var flash = require("connect-flash");
 
+
+app.use(flash()); 
 app.use(methodOverride("_method"));
+
 
 
 var commentRoutes = require("./routes/comments"),
@@ -44,8 +48,11 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next)=> {
 	res.locals.currentUser = req.user;
+	res.locals.success = req.flash("success");
+	res.locals.error = req.flash("error");
 	next();
 })
+
 
 app.use(commentRoutes);
 app.use(campgroundRoutes);

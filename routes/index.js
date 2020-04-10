@@ -37,6 +37,7 @@ routes.post("/login",passport.authenticate("local",{
 
 routes.get("/logout",(req,res) => {
 	req.logOut();
+	req.flash("success","Logged you out");
 	res.redirect("/campgrounds")
 })
 
@@ -45,6 +46,7 @@ function isLoggedIn(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
+	req.flash("success","Please Login First!");
 	res.redirect("/login");
 
 }

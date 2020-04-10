@@ -43,13 +43,69 @@ routes.post("/campgrounds/:id/comments",isLoggedIn,(req,res) => {
 	});
 });
 
+routes.get("/campgrounds/:id/comments/:comment_id/edit",checkAccountOwnership,(req,res)=> {
+	Comment.findById(req.params.comment_id,(err,element) => {
+		if(err){
+			res.redirect("back");
+		}
+		else{
+			res.render("commentEditForm", {comment: element, campgroundId : req.params.id});
+		}
+	})
+	
+})
+
+routes.put("/campgrounds/:id/comments/:comment_id",checkAccountOwnership,(req,res) => {
+	Comment.findByIdAndUpdate(req.params.comment_id,req.body.comment,(err,elemet) => {
+		if(err){
+			res.redirect("back");
+		}
+		else{
+			res.redirect("/campgrounds/" + req.params.id);
+		}
+	})
+
+})
+
+routes.delete("/campgrounds/:id/comments/:comment_id",checkAccountOwnership,(req,res)=> {
+	Comment.findByIdAndRemove(req.params.comment_id,(err,element) => {
+		if(err){
+			res.redirect("back");
+		}
+		else{
+			res.redirect("/campgrounds/" + req.params.id);
+		}
+
+	})
+})
+
 
 function isLoggedIn(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
+	req.flash("error","Please Login First!");
 	res.redirect("/login");
 
 }
+function checkAccountOwnership(req,res,next){
+	if(req.isAuthenticated()){
+		Comment.findById(req.params.comment_id,(err,element) => {
+			if(err){
+				res.redirect("back");
+			}
+			if(element.author.id.equals(req.user._id)){
+				next();
+			}
+			else{
+				res.redirect("back");
+			}
+		})
+	}
+	else {
+		res.redirect("back");
+	}
+}
+
 
 module.exports = routes;
