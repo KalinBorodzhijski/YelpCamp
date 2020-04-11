@@ -1,5 +1,6 @@
 .thumbnail img {
     width: 100%;
+    
 }
 .thumbnail {
     padding: 0;
@@ -9,4 +10,12 @@
 }
 .deleteButton {
     display: inline;
+}
+.form {
+    width: 30%;
+    margin: 25px auto;
+
+}
+#img-show {
+    height: 200px;
 }

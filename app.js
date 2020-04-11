@@ -18,9 +18,9 @@ app.use(methodOverride("_method"));
 
 
 
-var commentRoutes = require("./routes/comments"),
-	campgroundRoutes = require("./routes/campgrounds"),
-	indexRoutes = require("./routes/index");
+var commentRoutes = require("./routes/comments.js");
+var	campgroundRoutes = require("./routes/campgrounds.js");
+var indexRoutes = require("./routes/index.js");
 
 //seedDB();
 
@@ -53,10 +53,10 @@ app.use((req,res,next)=> {
 	next();
 })
 
-
+app.use(indexRoutes);
 app.use(commentRoutes);
 app.use(campgroundRoutes);
-app.use(indexRoutes);
+
 
 
 app.listen(3000,()=>{

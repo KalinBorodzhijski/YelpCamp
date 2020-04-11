@@ -24,6 +24,7 @@ routes.post("/campgrounds",isLoggedIn,(req,res) => {
 		name: req.body.name,
 		photo: req.body.photo,
 		descriptions: req.body.descriptions,
+		price: req.body.price,
 		author: {
 			id: req.user._id,
 			username: req.user.username
@@ -86,7 +87,7 @@ function isLoggedIn(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
-	req.flash("error","Please Login First!");
+	req.flash("error","You need to be logged in to do that!!!");
 	res.redirect("/login");
 }
 
@@ -94,17 +95,21 @@ function checkAccountOwnership(req,res,next){
 	if(req.isAuthenticated()){
 		camp.findById(req.params.id,(err,element) => {
 			if(err){
+				req.flash("error","Error with the database");
 				res.redirect("back");
 			}
 			if(element.author.id.equals(req.user._id)){
+
 				next();
 			}
 			else{
+				req.flash("error","Permission Denied");
 				res.redirect("back"); 
 			}
 		})
 	}
 	else {
+		req.flash("error","You need to be logged in to do that!!!");
 		res.redirect("back");
 	}
 }

@@ -3,6 +3,7 @@ var campSchema = mongoose.Schema({
 	name: String,
 	photo: String,
 	descriptions: String,
+	price: Number,
 	comments: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
